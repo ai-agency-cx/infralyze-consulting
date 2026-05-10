@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: infralyze-consulting
+    restart: unless-stopped
+    networks:
+      - web-gateway
+      - internal-bridge
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.infralyze-consulting.rule=Host(`infralyze-consulting.89.167.67.215.sslip.io`)"
+      - "traefik.http.routers.infralyze-consulting.entrypoints=websecure"
+      - "traefik.http.routers.infralyze-consulting.tls.certresolver=myresolver"
+      - "traefik.http.services.infralyze-consulting.loadbalancer.server.port=80"
+      - "traefik.docker.network=web-gateway"
+    env_file:
+      - /opt/agency-v2/.env
+
+networks:
+  web-gateway:
+    external: true
+  internal-bridge:
+    external: true
